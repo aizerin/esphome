@@ -118,9 +118,9 @@ class Component {
    */
   virtual void mark_failed();
 
-  bool is_failed() const;
+  bool is_failed();
 
-  bool is_ready() const;
+  bool is_ready();
 
   virtual bool can_proceed();
 

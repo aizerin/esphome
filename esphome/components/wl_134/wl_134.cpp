@@ -1,8 +1,6 @@
 #include "wl_134.h"
 #include "esphome/core/log.h"
 
-#include <cinttypes>
-
 namespace esphome {
 namespace wl_134 {
 
@@ -73,7 +71,7 @@ Wl134Component::Rfid134Error Wl134Component::read_packet_() {
   ESP_LOGV(TAG, "isData:    %s", reading.isData ? "true" : "false");
   ESP_LOGV(TAG, "isAnimal:  %s", reading.isAnimal ? "true" : "false");
   ESP_LOGV(TAG, "Reserved0: %d", reading.reserved0);
-  ESP_LOGV(TAG, "Reserved1: %" PRId32, reading.reserved1);
+  ESP_LOGV(TAG, "Reserved1: %d", reading.reserved1);
 
   char buf[20];
   sprintf(buf, "%03d%012lld", reading.country, reading.id);

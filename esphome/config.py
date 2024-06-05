@@ -34,7 +34,7 @@ from esphome.voluptuous_schema import ExtraKeysInvalid
 from esphome.log import color, Fore
 import esphome.final_validate as fv
 import esphome.config_validation as cv
-from esphome.types import ConfigType, ConfigFragmentType
+from esphome.types import ConfigType, ConfigPathType, ConfigFragmentType
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -148,8 +148,6 @@ class Config(OrderedDict, fv.FinalValidateConfig):
         path = path or []
         try:
             yield
-        except cv.FinalExternalInvalid as e:
-            self.add_error(e)
         except vol.Invalid as e:
             e.prepend(path)
             self.add_error(e)
@@ -213,7 +211,7 @@ class Config(OrderedDict, fv.FinalValidateConfig):
         return doc_range
 
     def get_nested_item(
-        self, path: ConfigPath, raise_error: bool = False
+        self, path: ConfigPathType, raise_error: bool = False
     ) -> ConfigFragmentType:
         data = self
         for item_index in path:
@@ -244,7 +242,7 @@ class Config(OrderedDict, fv.FinalValidateConfig):
                 return path
         raise KeyError(f"ID {id} not found in configuration")
 
-    def get_config_for_path(self, path: ConfigPath) -> ConfigFragmentType:
+    def get_config_for_path(self, path: ConfigPathType) -> ConfigFragmentType:
         return self.get_nested_item(path, raise_error=True)
 
     @property
@@ -885,9 +883,6 @@ def _get_parent_name(path, config):
                 # Sub-item
                 break
             return domain
-    # When processing a list, skip back over the index
-    while len(path) > 1 and isinstance(path[-1], int):
-        path = path[:-1]
     return path[-1]
 
 
@@ -1109,14 +1104,7 @@ def read_config(command_line_substitutions):
             if errline:
                 errstr += f" {errline}"
             safe_print(errstr)
-            split_dump = dump_dict(res, path)[0].splitlines()
-            # find the last error message
-            i = len(split_dump) - 1
-            while i > 10 and "\033[" not in split_dump[i]:
-                i = i - 1
-            # discard lines more than 4 beyond the last error
-            i = min(i + 4, len(split_dump))
-            safe_print(indent("\n".join(split_dump[:i])))
+            safe_print(indent(dump_dict(res, path)[0]))
 
         for err in res.errors:
             safe_print(color(Fore.BOLD_RED, err.msg))

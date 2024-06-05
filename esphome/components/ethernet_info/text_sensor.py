@@ -4,7 +4,6 @@ from esphome.components import text_sensor
 from esphome.const import (
     CONF_IP_ADDRESS,
     CONF_DNS_ADDRESS,
-    CONF_MAC_ADDRESS,
     ENTITY_CATEGORY_DIAGNOSTIC,
 )
 
@@ -18,10 +17,6 @@ IPAddressEthernetInfo = ethernet_info_ns.class_(
 
 DNSAddressEthernetInfo = ethernet_info_ns.class_(
     "DNSAddressEthernetInfo", text_sensor.TextSensor, cg.PollingComponent
-)
-
-MACAddressEthernetInfo = ethernet_info_ns.class_(
-    "MACAddressEthernetInfo", text_sensor.TextSensor, cg.PollingComponent
 )
 
 CONFIG_SCHEMA = cv.Schema(
@@ -41,9 +36,6 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_DNS_ADDRESS): text_sensor.text_sensor_schema(
             DNSAddressEthernetInfo, entity_category=ENTITY_CATEGORY_DIAGNOSTIC
         ).extend(cv.polling_component_schema("1s")),
-        cv.Optional(CONF_MAC_ADDRESS): text_sensor.text_sensor_schema(
-            MACAddressEthernetInfo, entity_category=ENTITY_CATEGORY_DIAGNOSTIC
-        ),
     }
 )
 
@@ -59,6 +51,3 @@ async def to_code(config):
     if conf := config.get(CONF_DNS_ADDRESS):
         dns_info = await text_sensor.new_text_sensor(config[CONF_DNS_ADDRESS])
         await cg.register_component(dns_info, config[CONF_DNS_ADDRESS])
-    if conf := config.get(CONF_MAC_ADDRESS):
-        mac_info = await text_sensor.new_text_sensor(config[CONF_MAC_ADDRESS])
-        await cg.register_component(mac_info, config[CONF_MAC_ADDRESS])

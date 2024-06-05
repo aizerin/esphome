@@ -31,7 +31,7 @@ CONFIG_SCHEMA = (
 
 BEDJET_CLIENT_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(CONF_BEDJET_ID): cv.use_id(BedJetHub),
+        cv.Required(CONF_BEDJET_ID): cv.use_id(BedJetHub),
     }
 )
 

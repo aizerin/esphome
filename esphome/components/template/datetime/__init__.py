@@ -17,6 +17,7 @@ from esphome.const import (
     CONF_YEAR,
 )
 
+from esphome.core import coroutine_with_priority
 from .. import template_ns
 
 CODEOWNERS = ["@rfdarter"]
@@ -99,6 +100,7 @@ CONFIG_SCHEMA = cv.All(
 )
 
 
+@coroutine_with_priority(-100.0)
 async def to_code(config):
     var = await datetime.new_datetime(config)
 

@@ -1,11 +1,16 @@
 #include "sntp_component.h"
 #include "esphome/core/log.h"
 
+#if defined(USE_ESP32) || defined(USE_LIBRETINY)
+#include "lwip/apps/sntp.h"
 #ifdef USE_ESP_IDF
 #include "esp_sntp.h"
-#elif USE_ESP8266
+#endif
+#endif
+#ifdef USE_ESP8266
 #include "sntp.h"
-#else
+#endif
+#ifdef USE_RP2040
 #include "lwip/apps/sntp.h"
 #endif
 
@@ -20,15 +25,16 @@ namespace sntp {
 static const char *const TAG = "sntp";
 
 void SNTPComponent::setup() {
+#ifndef USE_HOST
   ESP_LOGCONFIG(TAG, "Setting up SNTP...");
-#if defined(USE_ESP_IDF)
-  if (esp_sntp_enabled()) {
-    esp_sntp_stop();
+#if defined(USE_ESP32) || defined(USE_LIBRETINY)
+  if (sntp_enabled()) {
+    sntp_stop();
   }
-  esp_sntp_setoperatingmode(ESP_SNTP_OPMODE_POLL);
-#else
-  sntp_stop();
   sntp_setoperatingmode(SNTP_OPMODE_POLL);
+#endif
+#ifdef USE_ESP8266
+  sntp_stop();
 #endif
 
   sntp_setservername(0, strdup(this->server_1_.c_str()));
@@ -39,10 +45,11 @@ void SNTPComponent::setup() {
     sntp_setservername(2, strdup(this->server_3_.c_str()));
   }
 #ifdef USE_ESP_IDF
-  esp_sntp_set_sync_interval(this->get_update_interval());
+  sntp_set_sync_interval(this->get_update_interval());
 #endif
 
   sntp_init();
+#endif
 }
 void SNTPComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "SNTP Time:");
@@ -52,7 +59,7 @@ void SNTPComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "  Timezone: '%s'", this->timezone_.c_str());
 }
 void SNTPComponent::update() {
-#if !defined(USE_ESP_IDF)
+#if !defined(USE_ESP_IDF) && !defined(USE_HOST)
   // force resync
   if (sntp_enabled()) {
     sntp_stop();

@@ -2,11 +2,12 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/i2c/i2c.h"
 
 namespace esphome {
-namespace ens160_base {
+namespace ens160 {
 
-class ENS160Component : public PollingComponent, public sensor::Sensor {
+class ENS160Component : public PollingComponent, public i2c::I2CDevice, public sensor::Sensor {
  public:
   void set_co2(sensor::Sensor *co2) { co2_ = co2; }
   void set_tvoc(sensor::Sensor *tvoc) { tvoc_ = tvoc; }
@@ -43,11 +44,6 @@ class ENS160Component : public PollingComponent, public sensor::Sensor {
   bool warming_up_{false};
   bool initial_startup_{false};
 
-  virtual bool read_byte(uint8_t a_register, uint8_t *data) = 0;
-  virtual bool write_byte(uint8_t a_register, uint8_t data) = 0;
-  virtual bool read_bytes(uint8_t a_register, uint8_t *data, size_t len) = 0;
-  virtual bool write_bytes(uint8_t a_register, uint8_t *data, size_t len) = 0;
-
   uint8_t firmware_ver_major_{0};
   uint8_t firmware_ver_minor_{0};
   uint8_t firmware_ver_build_{0};
@@ -60,5 +56,5 @@ class ENS160Component : public PollingComponent, public sensor::Sensor {
   sensor::Sensor *temperature_{nullptr};
 };
 
-}  // namespace ens160_base
+}  // namespace ens160
 }  // namespace esphome

@@ -6,10 +6,11 @@ from esphome.const import (
     CONF_ICON,
     CONF_INTERNAL,
     CONF_NAME,
-    CONF_SAFE_MODE,
     CONF_SETUP_PRIORITY,
-    CONF_TYPE_ID,
     CONF_UPDATE_INTERVAL,
+    CONF_TYPE_ID,
+    CONF_OTA,
+    CONF_SAFE_MODE,
     KEY_PAST_SAFE_MODE,
 )
 
@@ -138,12 +139,15 @@ async def build_registry_list(registry, config):
 
 
 async def past_safe_mode():
-    if CONF_SAFE_MODE not in CORE.config:
+    safe_mode_enabled = (
+        CONF_OTA in CORE.config and CORE.config[CONF_OTA][CONF_SAFE_MODE]
+    )
+    if not safe_mode_enabled:
         return
 
     def _safe_mode_generator():
         while True:
-            if CORE.data.get(CONF_SAFE_MODE, {}).get(KEY_PAST_SAFE_MODE, False):
+            if CORE.data.get(CONF_OTA, {}).get(KEY_PAST_SAFE_MODE, False):
                 return
             yield
 

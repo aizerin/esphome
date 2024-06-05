@@ -16,7 +16,7 @@ from .const import KEY_HOST
 # force import gpio to register pin schema
 from .gpio import host_pin_to_code  # noqa
 
-CODEOWNERS = ["@esphome/core", "@clydebarrow"]
+CODEOWNERS = ["@esphome/core"]
 AUTO_LOAD = ["network"]
 
 

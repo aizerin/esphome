@@ -1,15 +1,14 @@
-#ifdef USE_LIBRETINY
-#include "ota_backend.h"
-#include "ota_backend_arduino_libretiny.h"
-
 #include "esphome/core/defines.h"
+#ifdef USE_LIBRETINY
+
+#include "ota_backend_arduino_libretiny.h"
+#include "ota_component.h"
+#include "ota_backend.h"
 
 #include <Update.h>
 
 namespace esphome {
 namespace ota {
-
-std::unique_ptr<ota::OTABackend> make_ota_backend() { return make_unique<ota::ArduinoLibreTinyOTABackend>(); }
 
 OTAResponseTypes ArduinoLibreTinyOTABackend::begin(size_t image_size) {
   bool ret = Update.begin(image_size, U_FLASH);

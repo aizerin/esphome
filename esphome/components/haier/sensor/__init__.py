@@ -31,7 +31,6 @@ from ..climate import (
     HonClimate,
 )
 
-CODEOWNERS = ["@paveldn"]
 SensorTypeEnum = HonClimate.enum("SubSensorType", True)
 
 # Haier sensors

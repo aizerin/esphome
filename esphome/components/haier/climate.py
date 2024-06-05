@@ -55,7 +55,6 @@ PROTOCOL_HON = "HON"
 PROTOCOL_SMARTAIR2 = "SMARTAIR2"
 
 haier_ns = cg.esphome_ns.namespace("haier")
-hon_protocol_ns = haier_ns.namespace("hon_protocol")
 HaierClimateBase = haier_ns.class_(
     "HaierClimateBase", uart.UARTDevice, climate.Climate, cg.Component
 )
@@ -64,7 +63,7 @@ Smartair2Climate = haier_ns.class_("Smartair2Climate", HaierClimateBase)
 
 CONF_HAIER_ID = "haier_id"
 
-AirflowVerticalDirection = hon_protocol_ns.enum("VerticalSwingMode", True)
+AirflowVerticalDirection = haier_ns.enum("AirflowVerticalDirection", True)
 AIRFLOW_VERTICAL_DIRECTION_OPTIONS = {
     "HEALTH_UP": AirflowVerticalDirection.HEALTH_UP,
     "MAX_UP": AirflowVerticalDirection.MAX_UP,
@@ -74,7 +73,7 @@ AIRFLOW_VERTICAL_DIRECTION_OPTIONS = {
     "HEALTH_DOWN": AirflowVerticalDirection.HEALTH_DOWN,
 }
 
-AirflowHorizontalDirection = hon_protocol_ns.enum("HorizontalSwingMode", True)
+AirflowHorizontalDirection = haier_ns.enum("AirflowHorizontalDirection", True)
 AIRFLOW_HORIZONTAL_DIRECTION_OPTIONS = {
     "MAX_LEFT": AirflowHorizontalDirection.MAX_LEFT,
     "LEFT": AirflowHorizontalDirection.LEFT,
@@ -484,4 +483,4 @@ async def to_code(config):
             trigger, [(cg.uint8, "code"), (cg.const_char_ptr, "message")], conf
         )
     # https://github.com/paveldn/HaierProtocol
-    cg.add_library("pavlodn/HaierProtocol", "0.9.28")
+    cg.add_library("pavlodn/HaierProtocol", "0.9.25")
