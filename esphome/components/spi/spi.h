@@ -350,13 +350,14 @@ class SPIComponent : public Component {
   void setup() override;
   void dump_config() override;
 
+  SPIInterface interface_{};
+
  protected:
   GPIOPin *clk_pin_{nullptr};
   GPIOPin *sdi_pin_{nullptr};
   GPIOPin *sdo_pin_{nullptr};
   std::vector<uint8_t> data_pins_{};
 
-  SPIInterface interface_{};
   bool using_hw_{false};
   const char *interface_name_{nullptr};
   SPIBus *spi_bus_{};
